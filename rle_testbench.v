@@ -1,5 +1,6 @@
 `timescale 100 ps/10 ps
 
+
 // The `timescale directive specifies that
 // the simulation time unit is 100 ps and
 // the simulator timestep is 10 ps
@@ -23,33 +24,36 @@ module rle_testbench;
 	begin
 
 	// Clock signal assignment
-
+		clkt <= 1; #5;
+      	clkt <= 0; #5;
+      	
+      	
 	end
 
 	// reset for a few cycles
-	initial
+  	initial
 	begin
 
 	// Reset signal assignment
-
+		rstt <= 1; #10;
+      	rstt <= 0; in_datat <= 0; #10;
 	end
 
 	// test vector generator
 	initial
 	begin
-
+      
+      	in_datat <= 0'b11111111;				//1000 0000 0000 0000 0000 1000
+      	recv_ready <= 1;			//lock(recv_read)
 	  // test vector 1
-
+		
 
 		// test vector 2
-
-
-
-
-
  	  // test vector n
-
-
+      $display("hello");
+		
 		$stop;
 	end
 endmodule
+
+
