@@ -39,7 +39,7 @@ module rle_testbench;
 
 	// Reset signal assignment
 		rstt <= 1; #10;
-      	rstt <= 0; in_datat <= 8'b11001100;   //1000 0000 0000 0000 0000 1000
+      	rstt <= 0;    //1000 0000 0000 0000 0000 1000
       	#10;
 	end
 
@@ -48,7 +48,7 @@ module rle_testbench;
 	begin
       
       
-      
+      /*
       // test vector 1
       recv_readyt <= 1;			//activate state machine
       #200;
@@ -73,50 +73,76 @@ module rle_testbench;
       end_of_streamt <= 1;
       $display("%b", out_datat);
       
+     
+      end_of_streamt <= 0;
+      $display("NEXT VECTOR");
       
-      #400;
+      
+      //RESET
       rstt <= 1; #10;
-      rstt <= 0; in_datat <= 8'b11001100;   //1000 0000 0000 0000 0000 1000
+      rstt <= 0; in_datat <= 8'b11100100;   //1000 0000 0000 0000 0000 1000
       #10;
         
-     
-      
-        
-		
-        
- 
-      
-      
-      
-      
-      
-      
       
 	  // test vector 2
- 	  // test vector n
-     
-      /*for (i = 0; i < n; i = i +1) begin
-        
-        recv_readyt <= 1;			//lock(recv_read)
+      recv_readyt <= 1;			//activate state machine
+      #200;
+      recv_readyt <= 0;
+
+      while (!rd_reqt) begin
+
+        //should be in COUNT_DONE after 200 cycles
         #200;
-        recv_readyt <= 0;
+
+
+        if (wr_reqt) begin
+          $display("%b", out_datat);
+        end
+
         send_readyt <= 1;
-        #5;
-        end_of_streamt <= 1;
+        #10;
         send_readyt <= 0;
 
-        while (!wr_reqt){};
-        $display("%b", out_datat);
+      end
+
+      end_of_streamt <= 1;
+      $display("%b", out_datat);
+      */
+      
+      //test vector n
+      for (i = 0; i < n; i = i +1) begin
         
-        #10;
+        in_datat <= 8'b11111110;
+        recv_readyt <= 1;			//activate state machine
+        #40;
+        recv_readyt <= 0;
+
+        while (!rd_reqt) begin
+          
+          //should be in COUNT_DONE after 200 cycles
+          #200;
+
+
+          if (wr_reqt) begin
+            $display("%b", out_datat);
+          end
+
+          send_readyt <= 1;
+          #10;
+          send_readyt <= 0;
+
+        end
+
+		
         end_of_streamt <= 0;
-      	#20;
-        
-        rstt <= 1; #10;
-      	rstt <= 0; in_datat <= 8'b11111111;   //1000 0000 0000 0000 0000 1000
-      	#10;
-        
-      end*/
+       
+      end
+      
+      $display("%b", out_datat);
+      end_of_streamt <= 1;
+      
+      
+ 	 
       
 		$stop;
 	end
