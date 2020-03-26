@@ -39,7 +39,7 @@ module rle_testbench;
 
 	// Reset signal assignment
 		rstt <= 1; #10;
-      	rstt <= 0; in_datat <= 8'b11111111;   //1000 0000 0000 0000 0000 1000
+      	rstt <= 0; in_datat <= 8'b11001100;   //1000 0000 0000 0000 0000 1000
       	#10;
 	end
 
@@ -47,11 +47,43 @@ module rle_testbench;
 	initial
 	begin
       
-      // test vector 1
-    
       
+      
+      // test vector 1
+      recv_readyt <= 1;			//activate state machine
+      #200;
+      recv_readyt <= 0;
+
+      while (!rd_reqt) begin
+
+        //should be in COUNT_DONE after 200 cycles
+        #200;
+
+
+        if (wr_reqt) begin
+          $display("%b", out_datat);
+        end
+
+        send_readyt <= 1;
+        #10;
+        send_readyt <= 0;
+
+      end
+
+      end_of_streamt <= 1;
+      $display("%b", out_datat);
+      
+      
+      #400;
+      rstt <= 1; #10;
+      rstt <= 0; in_datat <= 8'b11001100;   //1000 0000 0000 0000 0000 1000
+      #10;
+        
      
+      
+        
 		
+        
  
       
       
@@ -63,7 +95,7 @@ module rle_testbench;
 	  // test vector 2
  	  // test vector n
      
-      for (i = 0; i < n; i = i +1) begin
+      /*for (i = 0; i < n; i = i +1) begin
         
         recv_readyt <= 1;			//lock(recv_read)
         #200;
@@ -72,13 +104,21 @@ module rle_testbench;
         #5;
         end_of_streamt <= 1;
         send_readyt <= 0;
+
+        while (!wr_reqt){};
         $display("%b", out_datat);
+        
         #10;
         end_of_streamt <= 0;
       	#20;
         
-      end
+        rstt <= 1; #10;
+      	rstt <= 0; in_datat <= 8'b11111111;   //1000 0000 0000 0000 0000 1000
+      	#10;
+        
+      end*/
       
 		$stop;
 	end
+      
 endmodule
