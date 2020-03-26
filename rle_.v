@@ -77,108 +77,86 @@ always @(posedge clk) begin
       //next_state <= REQUEST_INPUT;
       
 	end
+      
 	REQUEST_INPUT: begin
 		//Assert rd_req signal to FIFO by setting rd_reg
 		//FIFO takes rd_req signal at next clock
       rd_reg <= 1;
       shift_count <= 4'b0;
       
-     
-      
-      
-      if(!recv_ready) begin			// wait for lock
-        //loopback
-      end
-      else begin
-        if(!recv_ready & end_of_stream & bit_count != 0) begin
-         	//next_state = COUNT_DONE;
-         end
-         else begin
-        	//next_state = WAIT_INPUT;
-         end
-      end
-      
 	end
+      
 	WAIT_INPUT: begin
 		//De-assert rd_req by setting rd_reg
       rd_reg <= 0;
       //next_state <= READ_INPUT;
 	end
+      
 	READ_INPUT : begin
 		//FIFO provides valid data after taking rd_req
 		//shift_buf stores 8 bit input data
       shift_buf <= in_data;
       //next_state <= COUNT_BITS;
 	end
+      
 	COUNT_BITS: begin
 		//Count number of consecutive bits in shift_buf
 		//If new type of bit starts, store bit ID in value_type register
-		//If current value_type and shift_buf[0] is not matched, notify current encoding is completed and new encoding will be started
+		//If current value_type and shift_buf[0] is not matched, notify current encoding is completed 			and new encoding will be started
       
       //If shift_buf = 11111111 | 1111111 | 11111111
       
       
-      
-		if(new_bitstream) begin
-			
-          value_type <= shift_buf[0];
-		end
-		else begin
-			if(shift_buf[0] == value_type) begin
-				
-              bit_count <= bit_count + 23'b1;
-              //next_state <= SHIFT_BITS;
-              //shift shift_buf
-			end
-			else begin
-			  new_bitstream <= 1;
-              //next_state <= SHIFT_BITS;
-              
-			end
-		end
-	end
-	SHIFT_BITS: begin
-		//Right shift the shift_buf
-		//Increase shift_count
-      	if(shift_count == 7) begin				//maybe try shift_count == 8 at end
-      		//next_state <= REQUEST_INPUT;
-      	end
-      	else begin
-          if(!new_bitstream) begin
-              shift_buf <= shift_buf >> 1;
-              shift_count <= shift_count + 8'b1;
-              //next_state <= COUNT_BITS;
-          end
-          else begin
-
-            //next_state <= COUNT_DONE;
-          end
-        end
-	end
-	COUNT_DONE: begin
-		//Assert wr_req by setting wr_reg
-		//FIFO will take wr_req signal in next clock cycle
-      
-      wr_reg <= 1;
-      
-      if(send_ready) begin 
-        //next_state <= WAIT_OUTPUT;
-      end
-      
-	end
-	WAIT_OUTPUT : begin
-		//De-assert wr_req by setting wr_reg
-      wr_reg <= 1;
-      //next_state <= RESET_COUNT;
-	end
-	RESET_COUNT : begin
-		//Reset bit counting register after passing encoded data to output side FIFO
-      if(end_of_stream) begin
-        //next_state <= INIT;
+      if(new_bitstream) begin
+		
+        bit_count <= 23'b1;
+        value_type <= shift_buf[0];
+        //$display("value type: %d", value_type);
+		new_bitstream <= 0;
+        
       end
       else begin
-        //next_state <= COUNT_BITS;
+        if(shift_buf[0] == value_type) begin
+
+          bit_count <= bit_count + 23'b1;
+
+        end
+        else begin
+
+          new_bitstream <= 1;
+
+        end
       end
+	end
+      
+	SHIFT_BITS: begin
+      //Right shift the shift_buf
+      //Increase shift_count
+      if(!new_bitstream) begin
+
+        shift_buf <= shift_buf >> 1;
+        shift_count <= shift_count + 8'b1;
+
+      end
+	end
+      
+	COUNT_DONE: begin
+      //Assert wr_req by setting wr_reg
+      //FIFO will take wr_req signal in next clock cycle
+      wr_reg <= 1;
+
+	end
+      
+	WAIT_OUTPUT: begin
+      //De-assert wr_req by setting wr_reg
+      wr_reg <= 0;
+  
+	end
+      
+	RESET_COUNT: begin
+		//Reset bit counting register after passing encoded data to output side FIFO
+      bit_count <= 23'b0;
+      
 	end
 	endcase
 end
