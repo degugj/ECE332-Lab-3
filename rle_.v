@@ -1,3 +1,4 @@
+// Code your design here
 ////////////////////////////////////////////////////////////////////////
 // Run-Length Encoding Hardware for ECE354 Lab 3
 ////////////////////////////////////////////////////////////////////////
@@ -10,8 +11,8 @@ input [7:0] in_data;			//input data comes from input side FIFO
 input end_of_stream ;			//Indicate the end of bit stream. Flush out the last segment to FIFO.
 output [23:0] out_data;			//Output data to output side FIFO. [23] has bit ID, [22:0] has bit counting value
 output rd_req,wr_req;			//Read request for input side FIFO
-
-reg rd_reg,wr_reg;			//Write request for output side FIFO
+								//Write request for output side FIFO
+reg rd_reg,wr_reg;			
 reg [22:0] bit_count;			//Store number of consecutive bits in bit stream
 reg [3:0] shift_count;			//Current shift amount of shift_buf
 reg value_type;				//Bit ID
@@ -83,20 +84,23 @@ always @(posedge clk) begin
 		//FIFO takes rd_req signal at next clock
       rd_reg <= 1;
       shift_count <= 4'b0;
+      //$display("REQ_INPUT");
       
 	end
       
 	WAIT_INPUT: begin
 		//De-assert rd_req by setting rd_reg
       rd_reg <= 0;
-      //next_state <= READ_INPUT;
+      //$display("WAIT_INPUT");
+      
 	end
       
 	READ_INPUT : begin
 		//FIFO provides valid data after taking rd_req
 		//shift_buf stores 8 bit input data
       shift_buf <= in_data;
-      //next_state <= COUNT_BITS;
+      //$display("READ_INPUT");
+      
 	end
       
 	COUNT_BITS: begin
@@ -107,6 +111,7 @@ always @(posedge clk) begin
       //If shift_buf = 11111111 | 1111111 | 11111111
       
       
+      //$display("value type: %d", value_type);
       if(new_bitstream) begin
 		
         bit_count <= 23'b1;
