@@ -13,6 +13,9 @@ module rle_testbench;
 	reg end_of_streamt;
 	wire [23:0] out_datat;
 	wire rd_reqt, wr_reqt;
+   
+  	integer i;
+  	integer n = 5;
 
 	// instantiate the circuit under test
 	rle_enc uut
@@ -36,24 +39,46 @@ module rle_testbench;
 
 	// Reset signal assignment
 		rstt <= 1; #10;
-      	rstt <= 0; in_datat <= 0; #10;
+      	rstt <= 0; in_datat <= 8'b11111111;   //1000 0000 0000 0000 0000 1000
+      	#10;
 	end
 
 	// test vector generator
 	initial
 	begin
       
-      	in_datat <= 0'b11111111;				//1000 0000 0000 0000 0000 1000
-      	recv_ready <= 1;			//lock(recv_read)
-	  // test vector 1
+      // test vector 1
+    
+      
+     
 		
-
-		// test vector 2
+ 
+      
+      
+      
+      
+      
+      
+      
+	  // test vector 2
  	  // test vector n
-      $display("hello");
-		
+     
+      for (i = 0; i < n; i = i +1) begin
+        
+        recv_readyt <= 1;			//lock(recv_read)
+        #200;
+        recv_readyt <= 0;
+        send_readyt <= 1;
+        #5;
+        end_of_streamt <= 1;
+        send_readyt <= 0;
+        $display("%b", out_datat);
+        #10;
+        end_of_streamt <= 0;
+      	#20;
+        
+      end
+      
 		$stop;
 	end
 endmodule
-
-
