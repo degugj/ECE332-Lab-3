@@ -48,7 +48,13 @@ module rle_testbench;
 	begin
       
 	
-		in_datat <= 8'b0000000;
+		in_datat <= 8'b11111111;			//1. Frames with all zeroes and all ones
+		//in_datat <= 8'b0000000;
+		
+		//in_datat <= 8'b00001111;			//2. Bit transitions within a single frame
+		//in_datat <= 8'b11110000;
+		//in_datat <= 8'b01010101;
+		
 		recv_readyt <= 1;
 		#40;
 		recv_readyt <= 0;
@@ -71,8 +77,10 @@ module rle_testbench;
 
 
 
-		/*in_datat <= 8'b00000000;
-		recv_readyt <= 1;			//activate state machine
+		/*in_datat <= 8'b11110000;			//3. Bit transitions between frames (both 0 to 1 and 1 to 0)
+		in_datat <= 8'b00001111;			
+		
+		recv_readyt <= 1;
 		#40;
 		recv_readyt <= 0;
 
@@ -93,9 +101,8 @@ module rle_testbench;
 		*/
 	
 		end_of_streamt <= 0;
-             
-      		//$display("%b", out_datat);
-      		end_of_streamt <= 1;
+      	end_of_streamt <= 1;
+      	//$display("%b", out_datat);
       
 
 
