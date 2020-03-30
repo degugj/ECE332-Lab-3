@@ -130,7 +130,9 @@ module rle_testbench;
 	  #10;
 	  send_readyt <= 0;
 
-	end
+
+
+
 
 
 
