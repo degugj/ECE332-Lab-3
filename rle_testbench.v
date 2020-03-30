@@ -58,54 +58,47 @@ module rle_testbench;
 		recv_readyt <= 1;
 		#40;
 		recv_readyt <= 0;
-
+		
+		//run while we are not requesting to read the input, essentially deals with multiple bitstreams in a frame
 		while (!rd_reqt) begin
 	  
 			//should be in COUNT_DONE after 200 cycles
 			#200;
-
-
-			if (wr_reqt) begin
-				$display("%b", out_datat);
-			end
-
+			
+			//flag for to transition from COUNT_DONE -> WAIT_OUTPUT
 			send_readyt <= 1;
 			#10;
 			send_readyt <= 0;
 
 		end
 
-
-
+		
+		//2nd test vector that is used to test multiple frames
 		/*in_datat <= 8'b11110000;			//3. Bit transitions between frames (both 0 to 1 and 1 to 0)
 		in_datat <= 8'b00001111;			
 		
 		recv_readyt <= 1;
 		#40;
 		recv_readyt <= 0;
-
+		
+		//run while we are not requesting to read the input, essentially deals with multiple bitstreams in a frame
 		while (!rd_reqt) begin
-
+	  
 			//should be in COUNT_DONE after 200 cycles
 			#200;
-
-
-			if (wr_reqt) begin
-				//$display("%b", out_datat);
-			end
-	
+			
+			//flag for to transition from COUNT_DONE -> WAIT_OUTPUT
 			send_readyt <= 1;
 			#10;
 			send_readyt <= 0;
+
 		end
 		*/
 	
 		end_of_streamt <= 0;
-      	end_of_streamt <= 1;
-      	//$display("%b", out_datat);
-      
-
-
+		end_of_streamt <= 1;
+		//$display("%b", out_datat);
+     
  
       		$stop;
 	end
