@@ -99,10 +99,10 @@ always @(posedge clk) begin
 	end
       
 	COUNT_BITS: begin
-		//Count number of consecutive bits in shift_buf
-		//If new type of bit starts, store bit ID in value_type register
-		//If current value_type and shift_buf[0] is not matched, notify current encoding is completed and new encoding will be started
-      
+	   //Count number of consecutive bits in shift_buf
+	   //If new type of bit starts, store bit ID in value_type register
+	   //If current value_type and shift_buf[0] is not matched, notify current encoding is completed and new encoding will be started
+
 	      if(new_bitstream) begin
 		//set bit count to 1 for new bitstream
 		bit_count <= 23'b1;
